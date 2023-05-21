@@ -2,13 +2,11 @@
 
 namespace EndlessCalculator
 {
-    public partial class App : Application
+    public partial class FlyoutMenuPage : ContentPage
     {
-        public App()
+        public FlyoutMenuPage()
         {
             InitializeComponent();
-
-            MainPage = new FlyoutMasterPage();
         }
     }
 }
