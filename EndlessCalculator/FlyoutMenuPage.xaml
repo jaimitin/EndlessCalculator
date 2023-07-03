@@ -1,14 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="EndlessCalculator.FlyoutMenuPage"
-             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             IconImageSource="dotnet_bot"
-             Title="Menu">
+<ecP:ViewModelPage x:Class="EndlessCalculator.FlyoutMenuPage"
+                   x:DataType="ec:FlyoutMenuPageViewModel"
+                   x:TypeArguments="ec:FlyoutMenuPageViewModel"
+                   x:Name="root"
+                   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                   xmlns:ec="clr-namespace:EndlessCalculator"
+                   xmlns:ecM="clr-namespace:EndlessCalculator.Models.Menu"
+                   xmlns:ecP="clr-namespace:EndlessCalculator.Models.Pages"
+                   xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                   IconImageSource="menu_hamburger"
+                   Title="Menu">
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate x:Key="DataTemplateRecursive" x:DataType="ecM:NavigationMenuItem">
+                <StackLayout Spacing="0">
+
+                    <toolkit:Expander>
+
+                        <toolkit:Expander.Header>
+
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="5" Padding="5">
+
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={Reference root}, Path='BindingContext.ItemTappedCommand'}" CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+
+                                <Grid.Triggers>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding HasChildren}" Value="false">
+                                        <Setter Property="ColumnDefinitions" Value="*" />
+                                        <Setter Property="Padding" Value="5" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding IsRoot}" Value="false">
+                                        <Setter Property="Padding" Value="5,2" />
+                                    </DataTrigger>
+                                </Grid.Triggers>
+
+                                <Label Grid.Column="0" Text="{Binding Text}" FontAttributes="Bold" FontSize="20">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsRoot}" Value="false">
+                                            <Setter Property="FontAttributes" Value="None" />
+                                            <Setter Property="FontSize" Value="17" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <Image Grid.Column="1" Source="{AppThemeBinding Light='expand_arrow', Dark='expand_arrow_dark'}" HeightRequest="30" WidthRequest="30"
+                                       IsVisible="{Binding HasChildren}">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Source={RelativeSource AncestorType={Type toolkit:Expander}}, Path=IsExpanded}" Value="True">
+                                            <Setter Property="Source" Value="{AppThemeBinding Light='collapse_arrow', Dark='collapse_arrow_dark'}" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+
+                            </Grid>
+
+                        </toolkit:Expander.Header>
+
+                        <VerticalStackLayout IsVisible="{Binding HasChildren}" Margin="25,0,0,0"
+                                             BindableLayout.ItemsSource="{Binding Children}" BindableLayout.ItemTemplate="{StaticResource DataTemplateRecursive}" />
+
+                    </toolkit:Expander>
+
+                    <BoxView HeightRequest="1" Margin="5,0" IsVisible="{Binding HasChildren, Converter={StaticResource InvertedBoolConverter}}"
+                             Color="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+
+                    <BoxView HeightRequest="1" IsVisible="{Binding IsRoot}" Margin="5,0" />
+
+                </StackLayout>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
 
     <VerticalStackLayout>
 
-        <Label Text="Endless Calculator" HorizontalTextAlignment="Center" FontSize="Large" />
+        <Button Text="Endless Calculator" FontSize="Large" FontAttributes="Bold" Margin="20" HorizontalOptions="Center" Command="{Binding HomeTappedCommand}" />
+
+        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" BindableLayout.ItemTemplate="{StaticResource DataTemplateRecursive}" />
 
     </VerticalStackLayout>
 
-</ContentPage>
+
+</ecP:ViewModelPage>
