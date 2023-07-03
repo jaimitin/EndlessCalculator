@@ -3,7 +3,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace EndlessCalculator.Models
+namespace EndlessCalculator.Models.Pages
 {
     public abstract class EndlessPage : ContentPage
     {
